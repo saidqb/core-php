@@ -4,7 +4,7 @@ A dependency for php project
 
 # Description
 
-example Laravel Rest Api, progress build...
+progress build...
 
 # Requirments
 
