@@ -1,0 +1,27 @@
+{
+    "name": "saidqb/core-php",
+    "description": "core-php",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "php",
+        "dependency",
+        "library"
+    ],
+    "autoload": {
+        "psr-4": {
+            "Saidqb\\CorePhp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "saidqb",
+            "email": "saidqb@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
