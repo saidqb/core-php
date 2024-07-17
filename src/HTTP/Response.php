@@ -2,7 +2,7 @@
 
 namespace Saidqb\CorePhp\HTTP;
 
-use Saidqb\CorePhp\Inf\ResponseCodeInterface;
+use Saidqb\CorePhp\Utils\ResponseCodeInterface;
 
 class Response implements ResponseCodeInterface
 {
