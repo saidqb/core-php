@@ -1,26 +1,58 @@
 <?php
-namespace Saidqb\CorePhp\Utils;
 
+namespace Saidqb\CorePhp;
+
+/**
+ * Class Pagination
+ * @package Saidqb\CorePhp
+ * usage:
+ * ```php
+ * $pagination = new Pagination();
+ * $pagination->totalItems(100)->itemPerPage(10)->currentPage(1)->get();
+ * or
+ * $pagination = Pagination::make()->totalItems(100)->itemPerPage(10)->currentPage(1)->get();
+ * ```
+ */
 class Pagination
 {
-    private $totalItems;
-    private $itemsPerPage;
-    private $currentPage;
-    private $totalPages;
+    private $totalItems = 0;
+    private $itemsPerPage = 10;
+    private $currentPage = 1;
+    private $totalPages = 0;
     private $noLimit = 999999999;
 
-    public function __construct(int $totalItems,  int $currentPage, int $itemsPerPage)
+    public static function make()
     {
-        $this->totalItems = $totalItems;
-        $this->itemsPerPage = $itemsPerPage;
-        $this->currentPage = $currentPage;
-        $this->totalPages = $this->calculateTotalPages();
+        return new self();
     }
 
-    public function setNoLimit($noLimit)
+    public function totalItems(int $totalItems)
     {
-        $this->noLimit = $noLimit;
+        $this->totalItems = $totalItems;
         return $this;
+    }
+
+    public function itemPerPage(int $itemsPerPage)
+    {
+        $this->itemsPerPage = $itemsPerPage;
+        return $this;
+    }
+
+    public function currentPage(int $currentPage)
+    {
+        $this->currentPage = $currentPage;
+        return $this;
+    }
+
+    public function showAll()
+    {
+        $this->itemsPerPage = $this->noLimit;
+        return $this;
+    }
+
+    public function getNoLimit(): int
+    {
+        return $this->noLimit;
     }
 
     public function getTotalItems(): int
@@ -40,6 +72,7 @@ class Pagination
 
     public function getTotalPages(): int
     {
+        $this->totalPages = $this->calculateTotalPages();
         return $this->totalPages;
     }
 
@@ -48,7 +81,7 @@ class Pagination
         return (int) ceil($this->totalItems / $this->itemsPerPage);
     }
 
-    public function get() : array
+    public function get(): array
     {
         $total = $this->totalItems;
         $pagenum = $this->currentPage;
