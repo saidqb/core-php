@@ -14,8 +14,13 @@ class Str extends StrModule
         $this->s = $str;
     }
 
-    public function toUpper(string $str): string
+    public function toLower(): string
     {
-        return strtoupper($str);
+        return strtolower($this->s);
+    }
+
+    public function toUpper(): string
+    {
+        return strtolower($this->s);
     }
 }
