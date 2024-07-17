@@ -16,7 +16,7 @@ class Strtest extends TestCase
 {
     public function testSample()
     {
-        $t = new Str();
+        $t = new Str('Test');
         $this->assertSame('TEST', $t->toUpper('test'));
     }
 }
