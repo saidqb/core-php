@@ -2,7 +2,7 @@
 * text=auto
 
 # ignore files
-/doc export-ignore
+/_doc export-ignore
 /tests export-ignore
 /.github export-ignore
 .gitattributes export-ignore

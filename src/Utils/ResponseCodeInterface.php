@@ -1,6 +1,7 @@
 <?php
 
-namespace Saidqb\CorePhp\Inf;
+namespace Saidqb\CorePhp\Utils;
+
 
 /**
  * Representation of an outgoing, server-side response.
@@ -86,5 +87,4 @@ interface ResponseCodeInterface
     public const HTTP_NOT_EXTENDED                    = 510;
     public const HTTP_NETWORK_AUTHENTICATION_REQUIRED = 511;
     public const HTTP_NETWORK_CONNECT_TIMEOUT_ERROR   = 599;
-
 }
