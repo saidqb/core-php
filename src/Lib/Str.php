@@ -4,23 +4,29 @@ namespace Saidqb\CorePhp\Lib;
 
 use Str\Str as StrModule;
 
-class Str extends StrModule
+class Str
 {
-    private $s;
 
-    public function __construct(string $str)
+    static function set(string $str): StrModule
     {
-        parent::__construct($str);
-        $this->s = $str;
+        return new StrModule($str);
     }
 
-    public function toLower(): string
+    static function isJson($str): bool
     {
-        return strtolower($this->s);
+        $str = new StrModule($str);
+        return $str->isJson();
     }
 
-    public function toUpper(): string
+
+
+    static function toLower($str): string
     {
-        return strtolower($this->s);
+        return strtolower($str);
+    }
+
+    static function toUpper($str): string
+    {
+        return strtolower($str);
     }
 }

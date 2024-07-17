@@ -7,7 +7,6 @@ class Arr
 {
     private $arr;
 
-
     static function collection(array $arr): ArrayCollection
     {
         $collection = new ArrayCollection($arr);
