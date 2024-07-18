@@ -7,6 +7,11 @@ class Arr
 {
     private $arr;
 
+    /**
+     * Arr constructor.
+     * @param array $arr
+     * manipulate array data,
+     */
     static function collection(array $arr): ArrayCollection
     {
         $collection = new ArrayCollection($arr);

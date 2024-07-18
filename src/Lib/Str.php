@@ -7,20 +7,20 @@ use Str\Str as StrModule;
 class Str
 {
 
-    static function set(string $str): StrModule
+    static function make(string $str): StrModule
     {
         return new StrModule($str);
     }
 
     static function excerpt(string $str, int $limit = 100, string $end = '...'): string
     {
-        $str = static::set($str);
+        $str = static::make($str);
         return $str->safeTruncate($limit, $end);
     }
 
     static function isJson($str): bool
     {
-        $str = static::set($str);
+        $str = static::make($str);
         return $str->isJson();
     }
 
