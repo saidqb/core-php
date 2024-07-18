@@ -12,9 +12,15 @@ class Str
         return new StrModule($str);
     }
 
+    static function excerpt(string $str, int $limit = 100, string $end = '...'): string
+    {
+        $str = static::set($str);
+        return $str->safeTruncate($limit, $end);
+    }
+
     static function isJson($str): bool
     {
-        $str = new StrModule($str);
+        $str = static::set($str);
         return $str->isJson();
     }
 
@@ -27,4 +33,6 @@ class Str
     {
         return strtolower($str);
     }
+
+
 }

@@ -4,7 +4,6 @@ namespace Saidqb\CorePhp;
 
 use Saidqb\CorePhp\Utils\ResponseCode;
 use Saidqb\CorePhp\Lib\Str;
-use Saidqb\CorePhp\Lib\Common;
 
 /**
  * Class Response
