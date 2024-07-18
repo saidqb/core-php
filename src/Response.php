@@ -8,8 +8,64 @@ use Saidqb\CorePhp\Lib\Str;
 class Response
 {
 
-    static $responseJsonDecode = array();
-    static $responseFilterConfig = array();
+    static $responseJsonDecode = [];
+    static $responseFilterConfig = [];
+
+    private $responseData = [];
+    private $status = ResponseCode::HTTP_OK;
+    private $message = ResponseCode::HTTP_OK_MESSAGE;
+    private $errorCode = 0;
+
+    public $header = [];
+
+    static function make()
+    {
+        return new self();
+    }
+
+    public function hide($arr = [])
+    {
+        static::$responseFilterConfig['hide'] = $arr;
+        return $this;
+    }
+
+    public function decode($arr = [])
+    {
+        static::$responseFilterConfig['decode'] = $arr;
+        return $this;
+    }
+
+    public function decodeChild($arr = [])
+    {
+        static::$responseFilterConfig['decode_child'] = $arr;
+        return $this;
+    }
+
+    public function decodeArray($arr = [])
+    {
+        static::$responseFilterConfig['decode_array'] = $arr;
+        return $this;
+    }
+
+    public function addFields($arr = [])
+    {
+        foreach ($arr as $k => $v) {
+            static::$responseFilterConfig['add_field'][$k] = $v;
+        }
+        return $this;
+    }
+
+    public function addField($field, $value = '')
+    {
+        static::$responseFilterConfig['add_field'][$field] = $value;
+        return $this;
+    }
+
+    public function hook($name, $callback)
+    {
+        static::$responseFilterConfig['hook'][$name] = $callback;
+        return $this;
+    }
 
     static function responseDecodeFor($arr = [])
     {
@@ -36,19 +92,8 @@ class Response
         static::$responseFilterConfig[$config] = $value;
     }
 
-    static function responseAddField($field, $value = '')
-    {
-        if (is_array($field)) {
-            foreach ($field as $k => $v) {
-                static::$responseFilterConfig['add_field'][$k] = $v;
-            }
-            return true;
-        }
-        static::$responseFilterConfig['add_field'][$field] = $value;
-        return true;
-    }
 
-    static function filterResponseField($arr)
+    public function filterResponseField($arr)
     {
         $nv = [];
         if (is_string($arr)) {
@@ -132,33 +177,59 @@ class Response
         return $nv;
     }
 
+    public function getHeader()
+    {
+        foreach ($this->header as $header) {
+            header($header);
+        }
+    }
+
+    public function appendHeader($key, $value)
+    {
+        $this->header[] = $key . ': ' . $value;
+        return $this;
+    }
+
+    public function withHeaders($headers = [])
+    {
+        foreach ($headers as $key => $value) {
+            $this->header[] = $key . ': ' . $value;
+        }
+        return $this;
+    }
+
+    public function responseDefault()
+    {
+        return [
+            'status' => $this->status,
+            'success' => $this->status == ResponseCode::HTTP_OK ? true : false, // 'true' or 'false
+            'error_code' => $this->errorCode,
+            'message' => $this->message,
+            'data' => [],
+        ];
+    }
+
     /**
      * Response data
      *
      * @param array $data
      * @param int $status
      * @param string $message
-     * @param int $error_code
+     * @param int $errorCode
      * @return \Illuminate\Http\JsonResponse
      */
-    static function response($data = [], $status = ResponseCode::HTTP_OK, $message = ResponseCode::HTTP_OK_MESSAGE, $error_code = 0)
+    public function response($data = [], $status = ResponseCode::HTTP_OK, $message = ResponseCode::HTTP_OK_MESSAGE, $errorCode = 0)
     {
         // rebuild the response data, if the data is not an array
         if (is_string($data) || is_numeric($data)) {
-            $error_code = $message == ResponseCode::HTTP_OK_MESSAGE ? $error_code : $message;
-            $message = $status == ResponseCode::HTTP_OK ? $error_code : $status;
-            $status = $data;
+            $this->errorCode = $message == ResponseCode::HTTP_OK_MESSAGE ? $errorCode : $message;
+            $this->message = $status == ResponseCode::HTTP_OK ? $errorCode : $status;
+            $this->status = $data;
         } else if (is_object($data)) {
             $data = (array)$data;
         }
 
-        $resData = [
-            'status' => $status,
-            'success' => $status == ResponseCode::HTTP_OK ? true : false, // 'true' or 'false
-            'error_code' => $error_code,
-            'message' => $message,
-            'data' => [],
-        ];
+        $resData = $this->responseDefault();
 
 
         if (isset($data['items'])) {
@@ -170,7 +241,7 @@ class Response
 
             if (!empty($data['items']) && is_array($data['items'])) {
                 foreach ($data['items'] as $k => $v) {
-                    $items[$k] = static::filterResponseField($v);
+                    $items[$k] = $this->filterResponseField($v);
                 }
             }
 
@@ -186,32 +257,40 @@ class Response
                 $resData['data']['pagination'] = $data['pagination'];
             }
 
-            return response()->json($resData, $status);
+            $this->responseData = $resData;
+            return $this;
         }
 
         if (isset($data['item'])) {
 
-            $data['item'] = static::filterResponseField($data['item']);
+            $data['item'] = $this->filterResponseField($data['item']);
             $resData['data'] = $data;
-            return response()->json($resData, $status);
+            $this->responseData = $resData;
+            return $this;
         }
 
         $item = (object) null;
 
         if (!empty($data)) {
             if (is_array($data)) {
-                $item = static::filterResponseField($data);
+                $item = $this->filterResponseField($data);
             }
         }
 
         $resData['data']['item'] = $item;
-        return response()->json($resData, $status);
+        $this->responseData = $resData;
+        return $this;
     }
+
 
     public function send()
     {
+        header("HTTP/1.1 " . $this->responseData['status'] . " " . $this->responseData['message']);
         header("Content-Type: application/json");
-        header("HTTP/1.1 " . $this->status . " " . $this->requestStatus($this->status));
-        echo json_encode($this->data);
+
+        $this->getHeader();
+
+        echo json_encode($this->responseData);
+        exit();
     }
 }
