@@ -15,10 +15,30 @@ namespace Saidqb\CorePhp;
  */
 class Pagination
 {
+
+    /**
+     * total items
+     */
     private $totalItems = 0;
+
+    /**
+     * display item per page, same as limit
+     */
     private $itemsPerPage = 10;
+
+    /**
+     * number of current page
+     */
     private $currentPage = 1;
+
+    /**
+     * total pages
+     */
     private $totalPages = 0;
+
+    /**
+     * no limit, show all items
+     */
     private $noLimit = 999999999;
 
     /**
@@ -29,18 +49,33 @@ class Pagination
         return new self();
     }
 
+    /**
+     * @param int $totalItems
+     * @return $this
+     * set total items, data from database
+     */
     public function totalItems(int $totalItems)
     {
         $this->totalItems = $totalItems;
         return $this;
     }
 
+    /**
+     * @param int $itemsPerPage
+     * @return $this
+     * set item per page as limit
+     */
     public function itemPerPage(int $itemsPerPage)
     {
         $this->itemsPerPage = $itemsPerPage;
         return $this;
     }
 
+    /**
+     * @param int $currentPage
+     * @return $this
+     * set current page, default is 1
+     */
     public function currentPage(int $currentPage)
     {
         $this->currentPage = $currentPage;
@@ -86,6 +121,7 @@ class Pagination
 
     /**
      * @return array
+     * get pagination data,
      */
     public function get(): array
     {

@@ -34,30 +34,45 @@ class Response
         return new self();
     }
 
+    /**
+     * hide fields, not show in response
+     */
     public function hide($arr = [])
     {
         $this->filterConfig['hide'] = $arr;
         return $this;
     }
 
+    /**
+     * decode fields, decode json string to array, with default empty object
+     */
     public function decode($arr = [])
     {
         $this->filterConfig['decode'] = $arr;
         return $this;
     }
 
+    /**
+     * decode child fields, decode json string to array
+     */
     public function decodeChild($arr = [])
     {
         $this->filterConfig['decode_child'] = $arr;
         return $this;
     }
 
+    /**
+     * decode array fields, decode json string to array, with default empty array
+     */
     public function decodeArray($arr = [])
     {
         $this->filterConfig['decode_array'] = $arr;
         return $this;
     }
 
+    /**
+     * add fields to response, multiple array fields
+     */
     public function addFields($arr = [])
     {
         foreach ($arr as $k => $v) {
@@ -66,18 +81,27 @@ class Response
         return $this;
     }
 
+    /**
+     * add field to response, single field
+     */
     public function addField($field, $value = '')
     {
         $this->filterConfig['add_field'][$field] = $value;
         return $this;
     }
 
+    /**
+     * hook fields, callback function
+     */
     public function hook($name, $callback)
     {
         $this->filterConfig['hook'][$name] = $callback;
         return $this;
     }
 
+    /**
+     * response config, default config
+     */
     public function responseConfig($arr = [])
     {
         $default = [
@@ -98,7 +122,9 @@ class Response
         $this->filterConfig[$config] = $value;
     }
 
-
+    /**
+     * item builder, filter response fields
+     */
     public function itemBuilder($data)
     {
         if (isset($data['items'])) {
@@ -135,7 +161,9 @@ class Response
         $resData['item'] = $item;
     }
 
-
+    /**
+     * filter response fields, based on config, manipulate the response data
+     */
     public function filterResponseField($arr)
     {
         $nv = [];
@@ -247,6 +275,11 @@ class Response
         return $this;
     }
 
+    /**
+     * Default response
+     * set default response data, if no data is passed
+     * @return array
+     */
     public function responseDefault()
     {
         return [
@@ -331,13 +364,19 @@ class Response
         return $this;
     }
 
-
-
+    /**
+     * Response data
+     * return array data, without response data wrapper
+     */
     public function toArray()
     {
         return $this->responseData;
     }
 
+    /**
+     * Send response
+     * get the response data and send it to the client, with headers and status code
+     */
     public function send()
     {
         $this->defaultHeaders();
@@ -346,5 +385,4 @@ class Response
         echo json_encode($this->responseData);
         exit();
     }
-
 }
