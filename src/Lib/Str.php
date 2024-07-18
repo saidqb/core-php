@@ -18,8 +18,6 @@ class Str
         return $str->isJson();
     }
 
-
-
     static function toLower($str): string
     {
         return strtolower($str);

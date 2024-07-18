@@ -21,6 +21,9 @@ class Pagination
     private $totalPages = 0;
     private $noLimit = 999999999;
 
+    /**
+     * @return Pagination
+     */
     public static function make()
     {
         return new self();
@@ -81,6 +84,9 @@ class Pagination
         return (int) ceil($this->totalItems / $this->itemsPerPage);
     }
 
+    /**
+     * @return array
+     */
     public function get(): array
     {
         $total = $this->totalItems;
@@ -89,19 +95,15 @@ class Pagination
 
         $total_page = ceil($total / $limit);
 
-        //------------- Prev page
         $prev = $pagenum - 1;
         if ($prev < 1) {
             $prev = 0;
         }
-        //------------------------
 
-        //------------- Next page
         $next = $pagenum + 1;
         if ($next > $total_page) {
             $next = 0;
         }
-        //----------------------
 
         $from = 1;
         $to = $total_page;

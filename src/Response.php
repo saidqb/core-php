@@ -5,11 +5,22 @@ namespace Saidqb\CorePhp;
 use Saidqb\CorePhp\Utils\ResponseCode;
 use Saidqb\CorePhp\Lib\Str;
 
+/**
+ * Class Response
+ * @package Saidqb\CorePhp
+ * usage:
+ * ```php
+ * Response::make()->response([], ResponseCode::HTTP_OK, ResponseCode::HTTP_OK_MESSAGE, 0)->send();
+ * or
+ * Response::make()->response(['items' => $items, 'pagination' => $pagination])->send();
+ * or
+ * Response::make()->response(['item' => $item])->send();
+ * ```
+ */
 class Response
 {
 
-    static $responseJsonDecode = [];
-    static $responseFilterConfig = [];
+    public $responseFilterConfig = [];
 
     private $responseData = [];
     private $status = ResponseCode::HTTP_OK;
@@ -25,54 +36,49 @@ class Response
 
     public function hide($arr = [])
     {
-        static::$responseFilterConfig['hide'] = $arr;
+        $this->responseFilterConfig['hide'] = $arr;
         return $this;
     }
 
     public function decode($arr = [])
     {
-        static::$responseFilterConfig['decode'] = $arr;
+        $this->responseFilterConfig['decode'] = $arr;
         return $this;
     }
 
     public function decodeChild($arr = [])
     {
-        static::$responseFilterConfig['decode_child'] = $arr;
+        $this->responseFilterConfig['decode_child'] = $arr;
         return $this;
     }
 
     public function decodeArray($arr = [])
     {
-        static::$responseFilterConfig['decode_array'] = $arr;
+        $this->responseFilterConfig['decode_array'] = $arr;
         return $this;
     }
 
     public function addFields($arr = [])
     {
         foreach ($arr as $k => $v) {
-            static::$responseFilterConfig['add_field'][$k] = $v;
+            $this->responseFilterConfig['add_field'][$k] = $v;
         }
         return $this;
     }
 
     public function addField($field, $value = '')
     {
-        static::$responseFilterConfig['add_field'][$field] = $value;
+        $this->responseFilterConfig['add_field'][$field] = $value;
         return $this;
     }
 
     public function hook($name, $callback)
     {
-        static::$responseFilterConfig['hook'][$name] = $callback;
+        $this->responseFilterConfig['hook'][$name] = $callback;
         return $this;
     }
 
-    static function responseDecodeFor($arr = [])
-    {
-        static::$responseJsonDecode = $arr;
-    }
-
-    static function responseConfig($arr = [])
+    public function responseConfig($arr = [])
     {
         $default = [
             'hide' => [],
@@ -84,12 +90,12 @@ class Response
         ];
 
         $rArr = array_merge($default, $arr);
-        static::$responseFilterConfig = $rArr;
+        $this->responseFilterConfig = $rArr;
     }
 
-    static function responseConfigAdd($config, $value = [])
+    public function responseConfigAdd($config, $value = [])
     {
-        static::$responseFilterConfig[$config] = $value;
+        $this->responseFilterConfig[$config] = $value;
     }
 
 
@@ -103,18 +109,18 @@ class Response
         if (!empty($arr)) {
             foreach ($arr as $kv => $v) {
 
-                if (!empty(static::$responseFilterConfig['hide'])) {
-                    if (in_array($kv, static::$responseFilterConfig['hide'])) continue;
+                if (!empty($this->responseFilterConfig['hide'])) {
+                    if (in_array($kv, $this->responseFilterConfig['hide'])) continue;
                 }
 
-                if (!empty(static::$responseFilterConfig['decode'])) {
+                if (!empty($this->responseFilterConfig['decode'])) {
 
-                    if (in_array($kv, static::$responseFilterConfig['decode'])) {
+                    if (in_array($kv, $this->responseFilterConfig['decode'])) {
                         if (!empty($v) && Str::isJson($v)) {
                             $nv[$kv] = json_decode($v);
 
-                            if (!empty(static::$responseFilterConfig['decode_child'])) {
-                                foreach (static::$responseFilterConfig['decode_child'] as $kdc => $vdc) {
+                            if (!empty($this->responseFilterConfig['decode_child'])) {
+                                foreach ($this->responseFilterConfig['decode_child'] as $kdc => $vdc) {
                                     if (strpos($vdc, '.') !== false) {
                                         $childv = explode('.', $vdc);
                                         if ($kv == $childv[0]) {
@@ -134,8 +140,8 @@ class Response
                     }
                 }
 
-                if (!empty(static::$responseFilterConfig['decode_array'])) {
-                    if (in_array($kv, static::$responseFilterConfig['decode_array'])) {
+                if (!empty($this->responseFilterConfig['decode_array'])) {
+                    if (in_array($kv, $this->responseFilterConfig['decode_array'])) {
                         if (!empty($v) && Str::isJson($v)) {
                             $nv[$kv] = json_decode($v);
                         } else if (is_array($v)) {
@@ -147,11 +153,6 @@ class Response
                     }
                 }
 
-                if (in_array($kv, static::$responseJsonDecode)) {
-                    $nv[$kv] = json_decode($v);
-                    continue;
-                }
-
                 if (is_null($v) || $v === NULL) {
                     $v = '';
                 }
@@ -159,16 +160,16 @@ class Response
                 $nv[$kv] = $v;
             }
 
-            if (!empty(static::$responseFilterConfig['add_field'])) {
-                foreach (static::$responseFilterConfig['add_field'] as $k => $v) {
+            if (!empty($this->responseFilterConfig['add_field'])) {
+                foreach ($this->responseFilterConfig['add_field'] as $k => $v) {
                     $nv[$k] = $v;
                 }
             }
 
-            if (!empty(static::$responseFilterConfig['hook'])) {
-                foreach (static::$responseFilterConfig['hook'] as $k => $v) {
-                    if (is_callable(static::$responseFilterConfig['hook'][$k])) {
-                        $nv = call_user_func(static::$responseFilterConfig['hook'][$k], $nv);
+            if (!empty($this->responseFilterConfig['hook'])) {
+                foreach ($this->responseFilterConfig['hook'] as $k => $v) {
+                    if (is_callable($this->responseFilterConfig['hook'][$k])) {
+                        $nv = call_user_func($this->responseFilterConfig['hook'][$k], $nv);
                     }
                 }
             }
@@ -177,11 +178,22 @@ class Response
         return $nv;
     }
 
-    public function getHeader()
+    public function defaultHeaders()
+    {
+        $this->header[] = "Content-Type: application/json";
+        $this->header[] = "HTTP/1.1 " . $this->responseData['status'] . " " . $this->responseData['message'];
+    }
+
+    public function getHeaders()
     {
         foreach ($this->header as $header) {
             header($header);
         }
+    }
+
+    public function getHeaderArray()
+    {
+        return $this->header;
     }
 
     public function appendHeader($key, $value)
@@ -282,15 +294,19 @@ class Response
         return $this;
     }
 
-
-    public function send()
+    public function sendJson()
     {
-        header("HTTP/1.1 " . $this->responseData['status'] . " " . $this->responseData['message']);
-        header("Content-Type: application/json");
-
-        $this->getHeader();
+        $this->defaultHeaders();
+        $this->getHeaders();
 
         echo json_encode($this->responseData);
         exit();
+    }
+
+    public function send($type = 'json')
+    {
+        if ($type == 'json') {
+            $this->sendJson();
+        }
     }
 }
