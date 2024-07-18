@@ -4,6 +4,7 @@ namespace Saidqb\CorePhp;
 
 use Saidqb\CorePhp\Utils\ResponseCode;
 use Saidqb\CorePhp\Lib\Str;
+use Saidqb\CorePhp\Lib\Common;
 
 /**
  * Class Response
@@ -96,6 +97,43 @@ class Response
     public function responseConfigAdd($config, $value = [])
     {
         $this->responseFilterConfig[$config] = $value;
+    }
+
+
+    public function itemBuilder($data)
+    {
+        if (isset($data['items'])) {
+            $items = [];
+
+            if (!empty($data['items'])) {
+                $items = $data['items'];
+            }
+
+            if (!empty($data['items']) && is_array($data['items'])) {
+                foreach ($data['items'] as $k => $v) {
+                    $items[$k] = $this->filterResponseField($v);
+                }
+            }
+
+            return $data['items'] = $items;
+        }
+
+        if (isset($data['item'])) {
+
+            $item = $this->filterResponseField($data['item']);
+            $data['item'] = $item;
+            return $data['item'];
+        }
+
+        $item = (object) null;
+
+        if (!empty($data)) {
+            if (is_array($data)) {
+                $item = $this->filterResponseField($data);
+            }
+        }
+
+        $resData['item'] = $item;
     }
 
 
