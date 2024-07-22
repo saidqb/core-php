@@ -69,6 +69,87 @@ Generate::str()->all($length);
 Generate::str()->custom($length, $charset);
 ```
 
+### Pagination
+
+```php
+use Saidqb\CorePhp\Pagination;
+
+$pagination = Pagination::make()->totalItems(100)->itemPerPage(10)->currentPage(1)->get();
+
+```
+
+### Response
+
+```php
+use Saidqb\CorePhp\Response;
+
+Response::make()->response([], ResponseCode::HTTP_OK, ResponseCode::HTTP_OK_MESSAGE, 0)->send();
+
+// list item
+Response::make()->response(['items' => $items, 'pagination' => $pagination])->send();
+
+// single item
+Response::make()->response(['item' => $item])->send();
+```
+
+**used in controller**
+
+BaseController
+```php
+use Saidqb\CorePhp\Response;
+use Saidqb\CorePhp\ResponseCode;
+
+public $res;
+
+public function __construct()
+{
+    $this->initResponse();
+}
+
+public function initResponse()
+{
+    $this->res = new Response();
+    return $this->res;
+}
+
+public function response($data, $code = ResponseCode::HTTP_OK, $message = ResponseCode::HTTP_OK_MESSAGE, $errorCode = 0)
+{
+    $this->res->response($data, $code, $message, $errorCode)->send();
+}
+```
+
+Extends to BaseController
+```php
+use Saidqb\CorePhp\ResponseCode;
+
+public function __construct()
+{
+    parent::__construct();
+
+    $this->initResponse()->hide(['password']);
+
+}
+
+public function index()
+{
+    $this->response($data, ResponseCode::HTTP_OK);
+}
+```
+
+Avilable Manipilate data:
+```php
+->hide(['password'])
+->decode(['extra'])
+->decodeChild(['extra.user'])
+->decodeArray(['extra_list'])
+->addFields(['field1' => '1', 'field2' => '2'])
+->addField('field1', '1')
+->hook('item', function($data){ return $data})
+```
+
+
+
+
 
 ## COFFEE FOR BEST PERFORMANCE
 
