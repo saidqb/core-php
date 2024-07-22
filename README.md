@@ -13,7 +13,7 @@ PHP >= 8.1
 ## Installation
 
 ```
-require saidqb/core-php
+composer require saidqb/core-php
 ```
 
 ## Package include
