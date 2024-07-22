@@ -136,7 +136,7 @@ public function index()
 }
 ```
 
-Avilable Manipilate data:
+Avilable Manipulate data:
 ```php
 ->hide(['password'])
 ->decode(['extra'])
