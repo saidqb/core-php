@@ -2,7 +2,7 @@
 
 namespace Saidqb\CorePhp\Utils\Concerns;
 
-trait Check
+trait HasCheck
 {
     static function issetVal($data, $key = '', $default = '')
     {

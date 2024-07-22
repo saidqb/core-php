@@ -11,5 +11,5 @@ use Saidqb\CorePhp\Utils\Concerns;
 class Check
 {
     // Use the Check trait
-    use Concerns\Check;
+    use Concerns\HasCheck;
 }
