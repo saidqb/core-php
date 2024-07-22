@@ -10,6 +10,12 @@ progress build...
 
 PHP >= 8.1
 
+## Installation
+
+```
+require saidqb/core-php
+```
+
 ## Package include
 
 - **Array Collection**  [doctrine/collection](https://www.doctrine-project.org/projects/collections.html)
