@@ -1,6 +1,6 @@
 <?php
 
-namespace Saidqb\CorePhp\Utils;
+namespace Saidqb\CorePhp;
 
 
 /**
