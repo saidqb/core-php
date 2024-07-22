@@ -33,6 +33,4 @@ class Str
     {
         return strtoupper($str);
     }
-
-
 }

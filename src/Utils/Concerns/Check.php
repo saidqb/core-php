@@ -1,8 +1,8 @@
 <?php
 
-namespace Saidqb\CorePhp\Lib;
+namespace Saidqb\CorePhp\Utils\Concerns;
 
-class Common
+trait Check
 {
     static function issetVal($data, $key = '', $default = '')
     {
