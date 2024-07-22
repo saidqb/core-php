@@ -123,13 +123,13 @@ class Pagination
      * @return array
      * get pagination data,
      */
-    public function get(): array
+    public function buildPagination(): array
     {
         $total = $this->totalItems;
         $pagenum = $this->currentPage;
         $limit = $this->itemsPerPage;
 
-        $total_page = ceil($total / $limit);
+        $total_page = $this->calculateTotalPages();
 
         $prev = $pagenum - 1;
         if ($prev < 1) {
@@ -207,4 +207,10 @@ class Pagination
 
         return $pagination;
     }
+
+    public function get()
+    {
+        return $this->buildPagination();
+    }
+
 }

@@ -243,10 +243,17 @@ class Response
         return $nv;
     }
 
-    public function defaultHeaders()
+    public function httpHeader(){
+        $this->header[] = "HTTP/1.1 " . $this->responseData['status'] . " " . $this->responseData['message'];
+    }
+    public function defaultHeader()
     {
         $this->header[] = "Content-Type: application/json";
-        $this->header[] = "HTTP/1.1 " . $this->responseData['status'] . " " . $this->responseData['message'];
+    }
+
+    public function getHeaderArray()
+    {
+        return $this->header;
     }
 
     public function getHeaders()
@@ -256,10 +263,7 @@ class Response
         }
     }
 
-    public function getHeaderArray()
-    {
-        return $this->header;
-    }
+
 
     public function appendHeader($key, $value)
     {
@@ -379,7 +383,15 @@ class Response
      */
     public function send()
     {
-        $this->defaultHeaders();
+
+        $header = $this->getHeaderArray();
+
+        $this->httpHeader();
+
+        if (empty($header)) {
+            $this->defaultHeader();
+        }
+
         $this->getHeaders();
 
         echo json_encode($this->responseData);

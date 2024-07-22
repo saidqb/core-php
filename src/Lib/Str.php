@@ -31,7 +31,7 @@ class Str
 
     static function toUpper($str): string
     {
-        return strtolower($str);
+        return strtoupper($str);
     }
 
 
