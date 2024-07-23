@@ -33,4 +33,38 @@ class Str
     {
         return strtoupper($str);
     }
+
+    static function toCamelCase(string $string): string
+    {
+        return str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $string)));
+    }
+
+    static function toSnakeCase(string $string): string
+    {
+        return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $string));
+    }
+
+    static function toKebabCase(string $string): string
+    {
+        return str_replace('_', '-', $string);
+    }
+
+    static function toTitleCase(string $string): string
+    {
+        return preg_replace('/\s+/', ' ', ucwords(preg_replace('/(?<!^)[A-Z]/', ' $0', static::toCamelCase($string))));
+    }
+
+    static function toSlug(string $string): string
+    {
+        return strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $string), '-'));
+    }
+
+    static function removePrefix(string $string, string $prefix): string
+    {
+        $strCount = strlen($prefix);
+        if (substr($string, 0, $strCount) == $prefix) {
+            $string = trim(substr($string, $strCount));
+        }
+        return $string;
+    }
 }
