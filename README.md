@@ -68,6 +68,7 @@ Generate::str()->special($length);
 Generate::str()->all($length);
 Generate::str()->custom($length, $charset);
 ```
+Detail [Documentation](https://github.com/PHLAK/StrGen)
 
 ### Pagination
 
