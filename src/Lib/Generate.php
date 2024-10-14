@@ -36,6 +36,6 @@ class Generate
             $salt = self::str()->mixedAlpha(20);
         }
         $hash = hash($algo, $salt . microtime()) . self::str()->custom(34, StrGen\CharSet::LOWER_ALPHA . StrGen\CharSet::NUMERIC);
-        return Str::make($hash)->insert('-', rand(25, 30))->insert('-', rand(55, 60)) ;
+        return Str::make($hash)->insert('-', rand(25, 30))->insert('-', rand(55, 60));
     }
 }
